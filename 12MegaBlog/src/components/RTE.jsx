@@ -3,8 +3,10 @@ import { Editor } from "@tinymce/tinymce-react";
 import {Controller} from 'react-hook-form'
 
 export default function RTE({name, control, label, defaultValue = ""}) {
-    
+
   return (
-    <div></div>
+    <div className="w-full">
+        
+    </div>
   );
 }

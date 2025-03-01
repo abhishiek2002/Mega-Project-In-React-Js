@@ -4,7 +4,6 @@ import { login as authLogin } from "../store/authSlice";
 import { useForm } from "react-hook-form";
 import authService from "../appwrite/auth";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { Logo, Input, Button } from "../components/index";
 
 const Login = () => {
@@ -13,29 +12,31 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-//   logic of login
-  const login = async (data) => {
+  //   logic of login
+  const login = async ({ email, password }) => {
     setError("");
     try {
-      const session = await authService.login(data);
+      const session = await authService.login({ email, password });
       if (session) {
         const userData = await authService.getCurrentUser();
-        if (userData) dispatch(login(userData));
-        navigate("/");
+        if (userData) {
+          dispatch(authLogin(userData));
+          navigate("/");
+        }
+
       }
     } catch (error) {
       setError(error.message);
     }
   };
 
-//   component jsx of login 
+  //   component jsx of login
 
   return (
     <div className="flex items-center justify-center w-full">
       <div
         className={`mx-auto w-full max-w-lg bg-gray-100 rounded-lg p-10 border border-black/10`}
       >
-
         {/* logo */}
         <div className="mb-2 flex justify-center">
           <span className="inline-block w-full max-w-[100px]">
@@ -63,7 +64,6 @@ const Login = () => {
         {/* Now, actual Form start from here */}
         <form onSubmit={handleSubmit(login)} className="mt-8">
           <div className="space-y-5">
-
             {/* Email Input Component */}
             <Input
               label="Email: "

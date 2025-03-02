@@ -9,21 +9,20 @@ import { Logo, Input, Button } from "../components/index";
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   //   logic of login
-  const login = async ({ email, password }) => {
+  const signin = async ({ email, password }) => {
     setError("");
     try {
       const session = await authService.login({ email, password });
       if (session) {
         const userData = await authService.getCurrentUser();
         if (userData) {
-          dispatch(authLogin(userData));
+          dispatch(authLogin(userData));         
           navigate("/");
         }
-
       }
     } catch (error) {
       setError(error.message);
@@ -62,7 +61,7 @@ const Login = () => {
         {error && <p className="text-red-500 text-center">{error}</p>}
 
         {/* Now, actual Form start from here */}
-        <form onSubmit={handleSubmit(login)} className="mt-8">
+        <form onSubmit={handleSubmit(signin)} className="mt-8">
           <div className="space-y-5">
             {/* Email Input Component */}
             <Input

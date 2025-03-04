@@ -10,7 +10,7 @@ const Signup = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [register, handleSubmit] = useForm();
+  const {register, handleSubmit} = useForm();
 
   //   logical part of Signup Page
 
@@ -22,7 +22,7 @@ const Signup = () => {
       if (session) {
         const userData = await authService.getCurrentUser();
         if (userData) dispatch(login(userData));
-        navigate("/");
+        // navigate("/");
       }
     } catch (error) {
       setError(error.message);

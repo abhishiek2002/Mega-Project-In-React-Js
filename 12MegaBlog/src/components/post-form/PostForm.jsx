@@ -1,16 +1,6 @@
 import React, { useCallback, useEffect } from "react";
-import { set, useForm } from "react-hook-form";
-import {
-  Header,
-  Footer,
-  Container,
-  Logo,
-  LogoutBtn,
-  Input,
-  Button,
-  Select,
-  RTE,
-} from "../index";
+import { useForm } from "react-hook-form";
+import { Input, Button, Select, RTE } from "../index";
 import appwriteService from "../../appwrite/config";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -20,7 +10,7 @@ function PostForm({ post }) {
     useForm({
       defaultValues: {
         title: post?.title || "",
-        slug: post?.slug || "",
+        slug: post?.$id || "",
         content: post?.content || "",
         status: post?.status || "active",
       },
@@ -28,11 +18,13 @@ function PostForm({ post }) {
 
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
+  console.log(userData);
+  
 
   const submit = async (data) => {
     if (post) {
       const file = data.image[0]
-        ? appwriteService.uploadFile(data.image[0])
+        ? await appwriteService.uploadFile(data.image[0])
         : null;
 
       if (file) {
@@ -70,7 +62,7 @@ function PostForm({ post }) {
       return value
         .trim()
         .toLowerCase()
-        .replace(/^[a-zA-Z\d\s]+/g, "-")
+        .replace(/[^a-zA-Z\d\s]+/g, "-")
         .replace(/\s/g, "-");
 
     return "";
@@ -88,9 +80,7 @@ function PostForm({ post }) {
       }
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, [watch, slugTransform, setValue]);
 
   return (
@@ -106,16 +96,18 @@ function PostForm({ post }) {
         <Input
           label="Slug :"
           placeholder="Slug"
-          {...register("slug", { required: true })}
           className="mb-4"
+          {...register("slug", { required: true })}
           onInput={(e) => {
-            setValue("slug", slugTransform(e.target.value), {
+            setValue("slug", slugTransform(e.currentTarget.value), {
               shouldValidate: true,
             });
           }}
         />
+
         <RTE
           label="Content :"
+          name="content"
           control={control}
           defaultValue={getValues("content")}
         />
